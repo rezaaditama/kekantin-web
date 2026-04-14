@@ -1,6 +1,8 @@
 import { Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom'; // Tambahkan Navigate di sini
 import ProtectedRoute from './components/ProtectedRoute';
+
+// Lazy loading imports tetap sama
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -16,7 +18,7 @@ const Detailpesanan = lazy(() => import('./pages/Detailpesanan'));
 
 const PageLoader = () => (
   <div className='min-h-screen flex items-center justify-center bg-[#F4F9FF]'>
-    <div className='text-orange-500 font-bold animate-pulse'>
+    <div className='text-orange-500 font-bold animate-pulse uppercase tracking-widest text-xs'>
       Memuat Halaman...
     </div>
   </div>
@@ -26,27 +28,34 @@ function App() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        {/* Tama */}
-        <Route path='*' element={<ErrorPage />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path='/payment' element={<PaymentPage />} />
-          <Route path='/order-status' element={<OrderStatusPage />} />
+        {/* PUBLIC ROUTES */}
+        <Route path='/' element={<Login />} />
+        <Route path='/register' element={<Register />} />
 
-          {/* Risma */}
-          <Route path='/keranjang' element={<Keranjang />} />
+        {/* ALIAS/REDIRECTS (Supaya link lama tidak broken) */}
+        <Route path='/login' element={<Navigate to='/' replace />} />
+        <Route path='/dashboard' element={<Navigate to='/beranda' replace />} />
+        <Route path='/keranjang' element={<Navigate to='/cart' replace />} />
+
+        {/* PROTECTED ROUTES */}
+        <Route element={<ProtectedRoute />}>
+          {/* Beranda (Sebelumnya Dashboard) */}
+          <Route path='/beranda' element={<Dashboard />} />
+
+          {/* Cart (Sebelumnya Keranjang) */}
+          <Route path='/cart' element={<Keranjang />} />
+
+          <Route path='/order-status' element={<OrderStatusPage />} />
+          <Route path='/payment' element={<PaymentPage />} />
           <Route path='/checkout' element={<Checkout />} />
           <Route path='/orders/:shop_id' element={<DaftarMenu />} />
-
-          {/* Tasya */}
           <Route path='/detail-pesanan' element={<Detailpesanan />} />
           <Route path='/profil' element={<Profil />} />
           <Route path='/edit-profile' element={<EditProfile />} />
-
-          {/* Zahra */}
-          <Route path='/dashboard' element={<Dashboard />} />
         </Route>
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
+
+        {/* 404 CATCH-ALL */}
+        <Route path='*' element={<ErrorPage />} />
       </Routes>
     </Suspense>
   );
