@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import Footer from '../components/footer';
+import Footer from '../components/Footer';
 import PaymentMethod from '../layouts/PaymentMethod';
 import PickupInfo from '../layouts/PickupInfo';
 import ConfirmPayment from '../layouts/ConfirmPayment';
