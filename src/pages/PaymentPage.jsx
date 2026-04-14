@@ -1,11 +1,4 @@
 import React, { useState } from 'react';
-import {
-  ChevronRight,
-  ShieldCheck,
-  ArrowLeft,
-  MapPin,
-  CreditCard,
-} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
