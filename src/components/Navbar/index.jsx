@@ -12,7 +12,7 @@ const Navbar = ({ variant = 'default' }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
-    navigate('/login');
+    navigate('/');
   };
 
   const updateBadge = () => {

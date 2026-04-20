@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom'; // Tambahkan Navigate di sini
 import ProtectedRoute from './components/ProtectedRoute';
+import KeKantinLanding from './pages/LandingPage';
 
 // Lazy loading imports tetap sama
 const Login = lazy(() => import('./pages/Login'));
@@ -29,11 +30,12 @@ function App() {
     <Suspense fallback={<PageLoader />}>
       <Routes>
         {/* PUBLIC ROUTES */}
-        <Route path='/' element={<Login />} />
+        <Route path='/' element={<KeKantinLanding />} />
+        <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
 
         {/* ALIAS/REDIRECTS (Supaya link lama tidak broken) */}
-        <Route path='/login' element={<Navigate to='/' replace />} />
+        {/* <Route path='/login' element={<Navigate to='/' replace />} /> */}
         <Route path='/dashboard' element={<Navigate to='/beranda' replace />} />
         <Route path='/keranjang' element={<Navigate to='/cart' replace />} />
 

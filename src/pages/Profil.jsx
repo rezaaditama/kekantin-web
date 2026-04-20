@@ -21,7 +21,7 @@ const Profil = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
-    navigate('/login');
+    navigate('/');
   };
 
   if (!user) return null;
