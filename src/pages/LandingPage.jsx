@@ -1,4 +1,4 @@
-import { UtensilsCrossed, LogIn, UserPlus } from 'lucide-react';
+import { Book, LogIn, UserPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
@@ -11,7 +11,7 @@ const KeKantinLanding = () => {
   };
 
   const handleRegister = () => {
-    navigate('/register');
+    navigate('/manual-guide');
   };
 
   return (
@@ -54,8 +54,8 @@ const KeKantinLanding = () => {
                 onClick={handleRegister}
                 className='w-full sm:w-auto border-2 border-slate-100 bg-white hover:bg-slate-50 text-slate-700 px-10 py-4 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all shadow-sm'
               >
-                <UserPlus className='w-5 h-5 text-[#F26522]' />
-                Daftar
+                <Book className='w-5 h-5 text-[#F26522]' />
+                Panduan
               </button>
             </div>
           </div>

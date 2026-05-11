@@ -44,9 +44,9 @@ const Navbar = ({ variant = 'default' }) => {
           {variant !== 'clean' && (
             <div className='hidden md:flex gap-8'>
               <button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/beranda')}
                 className={`text-sm font-bold transition-all pb-1 border-b-2 ${
-                  isActive('/dashboard')
+                  isActive('/beranda')
                     ? 'text-[#FF6B35] border-[#FF6B35]'
                     : 'text-gray-400 border-transparent hover:text-gray-600'
                 }`}
@@ -62,6 +62,16 @@ const Navbar = ({ variant = 'default' }) => {
                 }`}
               >
                 Pesanan
+              </button>
+              <button
+                onClick={() => navigate('/manual-guide')}
+                className={`text-sm font-bold transition-all pb-1 border-b-2 ${
+                  isActive('/manual-guide')
+                    ? 'text-[#FF6B35] border-[#FF6B35]'
+                    : 'text-gray-400 border-transparent hover:text-gray-600'
+                }`}
+              >
+                Bantuan
               </button>
             </div>
           )}

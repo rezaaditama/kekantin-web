@@ -16,6 +16,7 @@ const EditProfile = lazy(() => import('./pages/EditProfile'));
 const PaymentPage = lazy(() => import('./pages/PaymentPage'));
 const ErrorPage = lazy(() => import('./pages/ErrorPage'));
 const Detailpesanan = lazy(() => import('./pages/Detailpesanan'));
+const ManualGuide = lazy(() => import('./pages/ManualGuide'));
 
 const PageLoader = () => (
   <div className='min-h-screen flex items-center justify-center bg-[#F4F9FF]'>
@@ -33,6 +34,7 @@ function App() {
         <Route path='/' element={<KeKantinLanding />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
+        <Route path='/manual-guide' element={<ManualGuide />} />
 
         {/* ALIAS/REDIRECTS (Supaya link lama tidak broken) */}
         {/* <Route path='/login' element={<Navigate to='/' replace />} /> */}
