@@ -14,9 +14,6 @@ const Checkout = () => {
     setCartItems(getCart());
   }, []);
 
-  useEffect(() => {
-    setCartItems(getCart());
-  }, []);
   return (
     <div className='bg-slate-50 min-h-screen'>
       <Navbar variant='clean' />

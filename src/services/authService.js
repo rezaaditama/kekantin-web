@@ -1,11 +1,11 @@
 import api from './api/axios';
 
-export const login = async (email, password) => {
+export const login = async (email, password, role) => {
   try {
     const response = await api.post('/login', {
       email,
       password,
-      role: 'pembeli',
+      role,
     });
     return response.data;
   } catch (error) {

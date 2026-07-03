@@ -14,25 +14,43 @@ const Login = () => {
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
-      navigate('/dashboard');
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        // Jika user sengaja balik ke halaman login padahal sudah masuk, kembalikan sesuai role-nya
+        if (parsedUser.role === 'penjual') {
+          navigate('/dashboard-penjual');
+        } else {
+          navigate('/beranda');
+        }
+      } catch (e) {
+        localStorage.removeItem('user');
+      }
     }
   }, [navigate]);
 
   const handleSubmit = async (formData) => {
-    // Mulai loading
+    setError('');
     setLoading(true);
 
     try {
-      // Kirim data ke backend
-      const result = await login(formData.email, formData.password);
+      // Kirim email, password, dan role pilihan user ke service
+      const result = await login(formData.email, formData.password, formData.role);
 
-      // Jika berhasil, simpan data ke localStorage
-      localStorage.setItem('user', JSON.stringify(result));
+      // Gabungkan payload response backend dengan role-nya agar tersimpan di localStorage
+      const userSession = {
+        ...result,
+        role: formData.role
+      };
+      
+      localStorage.setItem('user', JSON.stringify(userSession));
 
-      // Arahkan ke dashboard
-      navigate('/dashboard');
+      // Pengalihan halaman dinamis berdasarkan role akun
+      if (formData.role === 'penjual') {
+        navigate('/dashboard-penjual');
+      } else {
+        navigate('/beranda');
+      }
     } catch (err) {
-      // Jika salah, tampilkan pesan error
       setError(err);
     } finally {
       setLoading(false);

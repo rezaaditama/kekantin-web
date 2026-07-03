@@ -61,7 +61,7 @@ const EditProfile = () => {
   return (
     <div className='min-h-screen bg-gray-50'>
       {/* NAVBAR */}
-      <Navbar />
+      <Navbar variant='clean'/>
 
       {/* MAIN */}
       <main className='pt-10 pb-12 px-4 flex justify-center'>

@@ -22,10 +22,13 @@ const Navbar = ({ variant = 'default' }) => {
   };
 
   useEffect(() => {
-    updateBadge();
-    window.addEventListener('cartUpdated', updateBadge);
-    return () => window.removeEventListener('cartUpdated', updateBadge);
-  }, []);
+    // Jalankan updateBadge hanya jika bukan variant clean atau minimal
+    if (variant !== 'clean' && variant !== 'minimal') {
+      updateBadge();
+      window.addEventListener('cartUpdated', updateBadge);
+      return () => window.removeEventListener('cartUpdated', updateBadge);
+    }
+  }, [variant]);
 
   const isActive = (path) => location.pathname === path;
 
@@ -41,7 +44,8 @@ const Navbar = ({ variant = 'default' }) => {
             ke.kantin
           </span>
 
-          {variant !== 'clean' && (
+          {/* Sembunyikan menu link jika variant 'clean' atau 'minimal' */}
+          {variant !== 'clean' && variant !== 'minimal' && (
             <div className='hidden md:flex gap-8'>
               <button
                 onClick={() => navigate('/beranda')}
@@ -79,30 +83,36 @@ const Navbar = ({ variant = 'default' }) => {
 
         {/* RIGHT: Cart & Profile/Toggle */}
         <div className='flex items-center gap-1 md:gap-5'>
+          {/* Sembunyikan seluruh isi kanan jika variant 'clean' */}
           {variant !== 'clean' && (
             <>
-              <div
-                onClick={() => navigate('/keranjang')}
-                className='relative cursor-pointer p-2 hover:bg-orange-50 rounded-full transition-colors active:scale-90'
-              >
-                <ShoppingCart className='w-5 h-5 md:w-6 md:h-6 text-gray-700' />
-                {cartCount > 0 && (
-                  <span className='absolute top-1 right-1 bg-[#FF6B35] text-white text-[9px] md:text-[10px] font-black w-4 h-4 md:w-5 md:h-5 flex items-center justify-center rounded-full border-2 border-white'>
-                    {cartCount}
-                  </span>
-                )}
-              </div>
+              {/* Keranjang & Toggle Mobile hanya muncul di variant default (bukan 'minimal') */}
+              {variant !== 'minimal' && (
+                <>
+                  <div
+                    onClick={() => navigate('/keranjang')}
+                    className='relative cursor-pointer p-2 hover:bg-orange-50 rounded-full transition-colors active:scale-90'
+                  >
+                    <ShoppingCart className='w-5 h-5 md:w-6 md:h-6 text-gray-700' />
+                    {cartCount > 0 && (
+                      <span className='absolute top-1 right-1 bg-[#FF6B35] text-white text-[9px] md:text-[10px] font-black w-4 h-4 md:w-5 md:h-5 flex items-center justify-center rounded-full border-2 border-white'>
+                        {cartCount}
+                      </span>
+                    )}
+                  </div>
 
-              {/* Mobile Toggle Button */}
-              <button
-                className='md:hidden p-2 text-gray-600 hover:bg-gray-50 rounded-lg active:bg-gray-100 transition-colors'
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
-                {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-              </button>
+                  {/* Mobile Toggle Button */}
+                  <button
+                    className='md:hidden p-2 text-gray-600 hover:bg-gray-50 rounded-lg active:bg-gray-100 transition-colors'
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  >
+                    {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                  </button>
+                </>
+              )}
 
-              {/* Profile Desktop Only */}
-              <div className='hidden md:block relative'>
+              {/* Profile Dropdown (Muncul di 'default' maupun 'minimal') */}
+              <div className={`${variant === 'minimal' ? 'block' : 'hidden md:block'} relative`}>
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className='flex items-center gap-2 p-1 border border-gray-100 rounded-full hover:bg-gray-50 transition-all shadow-sm'
@@ -119,19 +129,26 @@ const Navbar = ({ variant = 'default' }) => {
                 </button>
 
                 {isProfileOpen && (
-                  <div className='absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in zoom-in-95 duration-150'>
-                    <button
-                      onClick={() => {
-                        navigate('/profil');
-                        setIsProfileOpen(false);
-                      }}
-                      className='w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-600 hover:bg-gray-50 text-left'
-                    >
-                      <User size={16} /> Profil
-                    </button>
+                  <div className='absolute right-0 mt-3 w-44 bg-white rounded-2xl shadow-xl border border-gray-100 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150'>
+                    {/* Kondisional: Tampilkan Profil HANYA jika bukan variant minimal */}
+                    {variant !== 'minimal' && (
+                      <button
+                        onClick={() => {
+                          navigate('/profil');
+                          setIsProfileOpen(false);
+                        }}
+                        className='w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-600 hover:bg-gray-50 text-left'
+                      >
+                        <User size={16} /> Profil
+                      </button>
+                    )}
+                    
+                    {/* Tombol Keluar */}
                     <button
                       onClick={handleLogout}
-                      className='w-full flex items-center gap-3 px-4 py-3 text-sm font-black text-red-500 hover:bg-red-50 border-t border-gray-50 text-left'
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-black text-red-500 hover:bg-red-50 text-left ${
+                        variant !== 'minimal' ? 'border-t border-gray-50' : ''
+                      }`}
                     >
                       <LogOut size={16} /> Keluar
                     </button>
@@ -143,8 +160,8 @@ const Navbar = ({ variant = 'default' }) => {
         </div>
       </div>
 
-      {/* MOBILE MENU DRAWER - Optimized Spacing */}
-      {isMobileMenuOpen && (
+      {/* MOBILE MENU DRAWER - Hanya aktif untuk variant default */}
+      {variant !== 'minimal' && isMobileMenuOpen && (
         <div className='md:hidden bg-white border-t border-gray-100 animate-in slide-in-from-top-2 duration-200'>
           <div className='grid grid-cols-1 divide-y divide-gray-50'>
             <button

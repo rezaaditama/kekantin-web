@@ -11,16 +11,35 @@ const PaymentSummary = ({ items = [], pickupTime }) => {
     0
   );
 
+  const getUserFromStorage = () => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        return parsedUser.user_id ? Number(parsedUser.user_id) : null;
+      } catch (error) {
+        console.error("Gagal memparsing data user dari localStorage:", error);
+        return null;
+      }
+    }
+    return null;
+  };
+
   const handlePayment = async () => {
     if (items.length === 0) return alert('Keranjang kosong!');
     if (!pickupTime) return alert('Pilih waktu pengambilan!');
+
+    const currentUserId = getUserFromStorage();
+    if (!currentUserId) {
+      return alert('Sesi kamu telah berakhir. Silakan login kembali sebelum melakukan pembayaran.');
+    }
 
     setIsLoading(true);
 
     // Data payload
     const orderPayload = {
       order_id: `ORDER-${Date.now()}`, // Generate ID unik
-      user_id: 1, // Ganti dengan ID user dari context/auth Anda
+      user_id: currentUserId, // Ganti dengan ID user dari context/auth Anda
       pickup_time: pickupTime,
       total_harga: totalTagihan,
       payment_method: 'qris', // Trigger logic Midtrans di backend
