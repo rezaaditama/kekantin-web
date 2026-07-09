@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Send, Loader2, Store } from 'lucide-react';
+import { ArrowLeft, Send, Loader2, Store, User } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { getChatMessages, sendMessage, markMessagesAsRead } from '../services/chatService';
@@ -31,7 +31,7 @@ const ChatRoomPage = () => {
     }
     return null;
   };
-  
+
 
   const getUserFromStorage = () => {
     const storedUser = localStorage.getItem('user');
@@ -58,15 +58,19 @@ const ChatRoomPage = () => {
     try {
       if (showLoading) setIsLoading(true);
       const resData = await getChatMessages(targetRoomId);
-      
+
       // Jika backend mengembalikan format objek baru
       if (resData && typeof resData === 'object' && !Array.isArray(resData)) {
         setMessages(Array.isArray(resData.messages) ? resData.messages : []);
-        setShopName(resData.shop_name || 'Toko Kuliner');
+        if (userRole === 'penjual') {
+          setShopName(resData.buyer_name || 'Pelanggan');
+        } else {
+          setShopName(resData.shop_name || 'Toko Kuliner');
+        }
       } else {
         // Fallback jika backend belum di-update (berupa array langsung)
         setMessages(Array.isArray(resData) ? resData : []);
-        setShopName('Hubungi Penjual');
+        setShopName(userRole === 'penjual' ? 'Pelanggan' : 'Hubungi Penjual');
       }
     } catch (error) {
       console.error('Gagal memuat pesan:', error);
@@ -129,14 +133,14 @@ const ChatRoomPage = () => {
       <main className='max-w-3xl mx-auto w-full py-6 md:py-8 px-4 flex-grow flex flex-col h-[calc(100vh-140px)]'>
         {/* CHAT HEADER */}
         <div className='bg-white rounded-t-[24px] border-b border-slate-100 p-4 flex items-center gap-3 shadow-xs'>
-          <button 
-            onClick={handleBackNavigation} 
+          <button
+            onClick={handleBackNavigation}
             className='p-2 hover:bg-slate-50 rounded-xl transition-all'
           >
             <ArrowLeft size={20} className='text-slate-600' />
           </button>
           <div className='w-10 h-10 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600'>
-            <Store size={20} />
+            {userRole === 'penjual' ? <User size={20} /> : <Store size={20} />}
           </div>
           <div>
             {/* DISINI PERUBAHANNYA: Menggunakan state shopName */}
@@ -158,16 +162,15 @@ const ChatRoomPage = () => {
             messages.map((msg) => {
               const isMe = Number(msg.sender_id) === userId;
               return (
-                <div 
-                  key={msg.message_id} 
+                <div
+                  key={msg.message_id}
                   className={`flex flex-col max-w-[75%] ${isMe ? 'self-end items-end' : 'self-start items-start'}`}
                 >
-                  <div 
-                    className={`p-3.5 rounded-2xl text-sm font-medium shadow-xs break-words w-full ${
-                      isMe 
-                        ? 'bg-[#FF6B35] text-white rounded-tr-none' 
+                  <div
+                    className={`p-3.5 rounded-2xl text-sm font-medium shadow-xs break-words w-full ${isMe
+                        ? 'bg-[#FF6B35] text-white rounded-tr-none'
                         : 'bg-slate-100 text-slate-800 rounded-tl-none'
-                    }`}
+                      }`}
                   >
                     {msg.message}
                   </div>
@@ -195,8 +198,8 @@ const ChatRoomPage = () => {
         </div>
 
         {/* CHAT INPUT FOOTER */}
-        <form 
-          onSubmit={handleSendMessage} 
+        <form
+          onSubmit={handleSendMessage}
           className='bg-white p-3 rounded-b-[24px] border-t border-slate-100 flex items-center gap-2 shadow-xs'
         >
           <input
